@@ -20,14 +20,13 @@ RUN wget "http://software-dl.ti.com/msp430/msp430_public_sw/mcu/msp430/MSPGCC/la
         tar xf msp430-gcc-${MSP430_GCC_VERSION}_linux64.tar.bz2 && \
         unzip msp430-gcc-support-files-1.208.zip && \
         mv msp430-gcc-${MSP430_GCC_VERSION}_linux64 /opt/ti/msp430-gcc && \
-        mv msp430-gcc-support-files/include /opt/ti/msp430-gcc/include && \
+        mkdir -p /opt/ti/msp430-gcc/include && \
+        mv msp430-gcc-support-files/include/* /opt/ti/msp430-gcc/include/ && \
         rm msp430-gcc-${MSP430_GCC_VERSION}_linux64.tar.bz2 && \
         rm msp430-gcc-support-files-1.208.zip && \
-        rm -rf /opt/ti/msp430-gcc-support-files
+        rm -rf msp430-gcc-support-files
 ENV PATH /opt/ti/msp430-gcc/bin:$PATH
-ENV CPATH /opt/ti/msp430-gcc/include:$CPATH
-ENV CPATH /opt/ti/msp430-gcc/msp430-elf/include:$CPATH
-ENV LIBRARY_PATH /opt/ti/msp430-gcc/bin:$LIBRARY_PATH
+ENV MSP430_TOOLCHAIN_PATH /opt/ti/msp430-gcc
 
 # Install Doxygen
 RUN apt-get install -y doxygen
