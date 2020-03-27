@@ -28,6 +28,22 @@ RUN wget "http://software-dl.ti.com/msp430/msp430_public_sw/mcu/msp430/MSPGCC/la
 ENV PATH /opt/ti/msp430-gcc/bin:$PATH
 ENV MSP430_TOOLCHAIN_PATH /opt/ti/msp430-gcc
 
+# Install packages for UniFlash
+RUN apt-get update && \
+        apt-get install -y libusb-0.1-4 libgconf-2-4 gdb
+
+# Install UniFlash
+ENV UNIFLASH_VERSION=5.2.0.2519
+RUN wget "http://software-dl.ti.com/ccs/esd/uniflash/uniflash_sl.${UNIFLASH_VERSION}.run" && \
+        chmod +x uniflash_sl.${UNIFLASH_VERSION}.run && \
+        ./uniflash_sl.${UNIFLASH_VERSION}.run --unattendedmodeui none --mode unattended --prefix /opt/ti/uniflash && \
+        rm uniflash_sl.${UNIFLASH_VERSION}.run && \
+        cd /opt/ti/uniflash/TICloudAgentHostApp/install_scripts && \
+        mkdir -p /etc/udev/rules.d && \
+        cp 70-mm-no-ti-emulators.rules /etc/udev/rules.d/72-mm-no-ti-emulators.rules && \
+        cp 71-ti-permissions.rules /etc/udev/rules.d/73-ti-permissions.rules && \
+        ln -sf /lib/x86_64-linux-gnu/libudev.so.1 /lib/x86_64-linux-gnu/libudev.so.0
+
 # Install Doxygen
 RUN apt-get install -y doxygen
 
